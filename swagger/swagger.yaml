@@ -1,0 +1,572 @@
+swagger: "2.0"
+info:
+  description: "Oasis API Documentation"
+  version: "1.0.0"
+  title: "Oasis API"
+host: "118.82.6.185"
+basePath: "/api"
+tags:
+- name: "account"
+  description: "Operations about account"
+- name: "authenticator"
+  description: "Operations about account authenticator"
+- name: "services"
+  description: "Oasis service"
+schemes:
+- "http"
+paths:
+  /account/register/:
+    post:
+      tags:
+      - "account"
+      summary: "Create account"
+      description: "This can only be done by the logged in user."
+      operationId: "createAccount"
+      produces:
+      - "application/xml"
+      - "application/json"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "username"
+        in: "formData"
+        description: "username to create account"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "formData"
+        description: "password to create account"
+        required: true
+        type: "string"
+      - name: "email"
+        in: "formData"
+        description: "email to create account"
+        required: true
+        type: "string"
+      security:
+        - account_key: []
+      responses:
+        default:
+          description: "successful operation"
+  /account/login/:
+    post:
+      tags:
+      - "account"
+      summary: "Logs user into the system"
+      description: ""
+      operationId: "logintoAccount"
+      produces:
+      - "application/xml"
+      - "application/json"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "username"
+        in: "formData"
+        description: "username to create account"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "formData"
+        description: "password to create account"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "string"
+          headers:
+            X-Rate-Limit:
+              type: "integer"
+              format: "int32"
+              description: "calls per hour allowed by the user"
+            X-Expires-After:
+              type: "string"
+              format: "date-time"
+              description: "date in UTC when token expires"
+        "400":
+          description: "Invalid username/password supplied"
+    get:
+      tags:
+      - "account"
+      summary: "Logs user into the system"
+      description: ""
+      operationId: "loginAccount"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "query"
+        description: "The user name for login"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "query"
+        description: "The password for login in clear text"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "string"
+          headers:
+            X-Rate-Limit:
+              type: "integer"
+              format: "int32"
+              description: "calls per hour allowed by the user"
+            X-Expires-After:
+              type: "string"
+              format: "date-time"
+              description: "date in UTC when token expires"
+        "400":
+          description: "Invalid username/password supplied"
+  /account/logout/:
+    get:
+      tags:
+      - "account"
+      summary: "Logs out current logged in account session"
+      description: ""
+      operationId: "logoutAccount"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters: []
+      responses:
+        default:
+          description: "successful operation"
+      security:
+        - account_key: []
+  /account/unblock/:
+    post:
+      tags:
+      - "account"
+      summary: "Suspend account"
+      description: "This can only be done by the logged in user."
+      operationId: "unblockAccount"
+      produces:
+      - "application/xml"
+      - "application/json"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "username"
+        in: "formData"
+        description: "username to unblock"
+        required: true
+        type: "string"
+      security:
+        - account_key: []
+      responses:
+        "400":
+          description: "Invalid user supplied"
+        "404":
+          description: "User not found"
+  /account/list-block/:
+    get:
+      tags:
+      - "account"
+      summary: "List blocked account current logged in account session"
+      description: ""
+      operationId: "listblockAccount"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters: []
+      security:
+        - account_key: []
+      responses:
+        default:
+          description: "successful operation"
+  /account/authenticator/:
+    get:
+      tags:
+      - "authenticator"
+      summary: "Generate Authenticator account"
+      description: ""
+      operationId: "generateAuthenticator"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters: []
+      security:
+        - account_key: []
+      responses:
+        default:
+          description: "successful operation"
+  /account/authenticator/activate/:
+    post:
+      tags:
+      - "authenticator"
+      summary: "Activate Authenticator"
+      description: "This can only be done by the logged in user."
+      operationId: "activateAuthenticator"
+      produces:
+      - "application/xml"
+      - "application/json"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "code"
+        in: "formData"
+        description: "code authenticator"
+        required: true
+        type: "string"
+      security:
+        - account_key: []
+      responses:
+        "400":
+          description: "Invalid code supplied"
+        "404":
+          description: "Code not found"
+  /account/authenticator/disable/:
+    put:
+      tags:
+      - "authenticator"
+      summary: "Disable Authenticator"
+      description: "This can only be done by the logged in user."
+      operationId: "disableAuthenticator"
+      produces:
+      - "application/xml"
+      - "application/json"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "password"
+        in: "formData"
+        description: "password account"
+        required: true
+        type: "string"
+      security:
+        - account_key: []
+      responses:
+        "400":
+          description: "Invalid password supplied"
+        "404":
+          description: "Wrong Password"
+  /account/authenticator/login/:
+    post:
+      tags:
+      - "authenticator"
+      summary: "Verify Authenticator"
+      description: "This can only be done by the logged in user."
+      operationId: "verifyAuthenticator"
+      produces:
+      - "application/xml"
+      - "application/json"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "code"
+        in: "formData"
+        description: "authenticator code"
+        required: true
+        type: "string"
+      - name: "xtoken "
+        in: "formData"
+        description: "authenticator xtoken"
+        required: true
+        type: "string"
+      responses:
+        "400":
+          description: "Invalid password supplied"
+        "404":
+          description: "Wrong Password"
+  /account/suspend/:
+    put:
+      tags:
+      - "account"
+      summary: "Suspend account"
+      description: "This can only be done by the logged in user."
+      operationId: "suspendAccount"
+      produces:
+      - "application/xml"
+      - "application/json"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "password"
+        in: "formData"
+        description: "password username"
+        required: true
+        type: "string"
+      security:
+        - account_key: []
+      responses:
+        "400":
+          description: "Invalid user supplied"
+        "404":
+          description: "User not found"
+  /account/password-reset/:
+    post:
+      tags:
+      - "account"
+      summary: "Reset password account"
+      description: "This can only be done by the logged in user."
+      operationId: "forgotPassword"
+      produces:
+      - "application/xml"
+      - "application/json"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "email"
+        in: "formData"
+        description: "email account"
+        required: true
+        type: "string"
+      responses:
+        "400":
+          description: "Invalid email supplied"
+        "404":
+          description: "Email not found"
+  /account/password-reset/confirm/:
+    post:
+      tags:
+      - "account"
+      summary: "Confirm reset password account"
+      description: "This can only be done by the logged in user."
+      operationId: "confirmpasswordReset"
+      produces:
+      - "application/xml"
+      - "application/json"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "token"
+        in: "formData"
+        description: "token account"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "formData"
+        description: "password account"
+        required: true
+        type: "string"
+      responses:
+        "400":
+          description: "Invalid token or password supplied"
+        "404":
+          description: "Token or password not found"
+  /account/change-password/:
+    put:
+      tags:
+      - "account"
+      summary: "Change Password Account"
+      description: "This can only be done by the logged in user."
+      operationId: "changePassword"
+      produces:
+      - "application/xml"
+      - "application/json"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "old_password"
+        in: "formData"
+        description: "password that need to be updated"
+        required: true
+        type: "string"
+      - name: "new_password"
+        in: "formData"
+        description: "new password to be updated"
+        required: true
+        type: "string"
+      - name: "confirm_password"
+        in: "formData"
+        description: "confirm new password to be updated"
+        required: true
+        type: "string"
+      security:
+        - account_key: []
+      responses:
+        "400":
+          description: "Invalid password supplied"
+        "404":
+          description: "Wrong old Password"
+  /account/delete/:
+    delete:
+      tags:
+      - "account"
+      summary: "Delete account"
+      description: "This can only be done by the logged in user."
+      operationId: "deleteAccount"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "delete_account"
+        in: "formData"
+        description: "Delete account username"
+        required: true
+        type: "string"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      security:
+        - account_key: []
+      responses:
+        "400":
+          description: "Invalid username supplied"
+        "404":
+          description: "User not found"
+  /account/regen-token/:
+    post:
+      tags:
+      - "account"
+      summary: "Generate Token"
+      description: "This can only be done by the logged in user."
+      operationId: "regenToken"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters: []
+      consumes:
+      - "application/x-www-form-urlencoded"
+      security:
+        - account_key: []
+      responses:
+        default:
+          description: "successful operation"
+  /account/history-job/:
+    post:
+      tags:
+      - "account"
+      summary: "History Job"
+      description: "This can only be done by the logged in user."
+      operationId: "historyjob"
+      produces:
+      - "application/xml"
+      - "application/json"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "services"
+        in: "formData"
+        description: "services"
+        required: true
+        type: "string"
+      - name: "domain"
+        in: "formData"
+        description: "target domain"
+        required: true
+        type: "string"
+      security:
+        - account_key: []
+      responses:
+        "400":
+          description: "Invalid domain supplied"
+        "404":
+          description: "Domain not found"
+  /scan/ping/:
+    post:
+      tags:
+      - "services"
+      summary: "PING"
+      description: "This can only be done by the logged in user."
+      operationId: "ping"
+      produces:
+      - "application/xml"
+      - "application/json"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "domain"
+        in: "formData"
+        description: "target domain"
+        required: true
+        type: "string"
+      security:
+        - service_key: []
+      responses:
+        "400":
+          description: "Invalid domain supplied"
+        "404":
+          description: "Domain not found"
+  /scan/whois/:
+    post:
+      tags:
+      - "services"
+      summary: "Whois"
+      description: "This can only be done by the logged in user."
+      operationId: "whois"
+      produces:
+      - "application/xml"
+      - "application/json"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "domain"
+        in: "formData"
+        description: "target domain"
+        required: true
+        type: "string"
+      security:
+        - service_key: []
+      responses:
+        "400":
+          description: "Invalid domain supplied"
+        "404":
+          description: "Domain not found"
+  /scan/burp/:
+    post:
+      tags:
+      - "services"
+      summary: "Burp Suite"
+      description: "This can only be done by the logged in user."
+      operationId: "burp"
+      produces:
+      - "application/xml"
+      - "application/json"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "domain"
+        in: "formData"
+        description: "target domain"
+        required: true
+        type: "string"
+      security:
+        - service_key: []
+      responses:
+        "400":
+          description: "Invalid domain supplied"
+        "404":
+          description: "Domain not found"
+  /scan/subdomain/:
+    post:
+      tags:
+      - "services"
+      summary: "Sub Domain Finder"
+      description: "This can only be done by the logged in user."
+      operationId: "subdomain"
+      produces:
+      - "application/xml"
+      - "application/json"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "domain"
+        in: "formData"
+        description: "target domain"
+        required: true
+        type: "string"
+      security:
+        - service_key: []
+      responses:
+        "400":
+          description: "Invalid domain supplied"
+        "404":
+          description: "Domain not found"
+securityDefinitions:
+  account_key:
+    type: "apiKey"
+    name: "Authorization"
+    in: "header"
+  service_key:
+    type: "apiKey"
+    name: "Authorization"
+    in: "header"
+externalDocs:
+  description: "http://118.82.6.185:8000/api/"
+  url: "http://118.82.6.185:8000/api/"
